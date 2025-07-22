@@ -97,6 +97,7 @@
     <?php foreach ($produtos as $produto): ?>
     <tr>
       <td>
+        <!-- <input type="checkbox" class="checkbox-produto" name="produtos_excluir[]" value="<?= $produto['id'] ?>"> -->
         <form method="POST" action="?page=produtos&action=excluir" class="form-exclusao">
           <input type="checkbox" class="checkbox-produto" name="produtos_excluir[]" value="<?= $produto['id'] ?>">
         </form>
