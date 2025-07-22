@@ -39,6 +39,27 @@ if (isset($_GET['remover'])) {
     unset($_SESSION['cart'][$_GET['remover']]);
 }
 
+// Aplicar cupom
+if (isset($_POST['aplicar_cupom']) && !empty($_POST['codigo_cupom'])) {
+    require_once 'models/Coupon_model.php';
+    $cupomModel = new Coupon_model();
+
+    $codigo = strtoupper(trim($_POST['codigo_cupom']));
+    $cupom = $cupomModel->buscarPorCodigo($codigo);
+
+    if ($cupom) {
+        $_SESSION['cupom_aplicado'] = $cupom;
+        $_SESSION['mensagem_cupom'] = 'Cupom aplicado com sucesso!';
+    } else {
+        unset($_SESSION['cupom_aplicado']);
+        $_SESSION['mensagem_cupom'] = 'Cupom inválido ou expirado.';
+    }
+
+    header('Location: ?page=CartController');
+    exit;
+}
+
+
 // Cálculo subtotal, frete, desconto etc, mantém igual ao seu código original
 $cart = $_SESSION['cart'] ?? [];
 $subtotal = 0;
@@ -59,6 +80,16 @@ $cupom_aplicado = $_SESSION['cupom_aplicado'] ?? null;
 $desconto = $_SESSION['desconto'] ?? 0;
 
 $total = $subtotal + $frete;
+
+$desconto = 0;
+
+if ($cupom_aplicado && $subtotal >= $cupom_aplicado['minimo_subtotal']) {
+    $desconto = floatval($cupom_aplicado['desconto']);
+}
+
+$total = $subtotal + $frete - $desconto;
+if ($total < 0) $total = 0;
+
 
 // Mensagem de sucesso ao adicionar produto
 if (isset($_GET['msg']) && $_GET['msg'] === 'addsuccess') {
