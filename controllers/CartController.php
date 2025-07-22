@@ -7,7 +7,8 @@ $produtoModel = new Produto();
 
 if (isset($_GET['add'])) {
     $produtoId = intval($_GET['add']);
-    $quantidade = 1;
+    $quantidade = isset($_POST['quantidade']) ? intval($_POST['quantidade']) : 1;
+    if ($quantidade < 1) $quantidade = 1; // mínimo 1
 
     $produto = $produtoModel->buscarPorId($produtoId);
     if ($produto) {
@@ -26,7 +27,6 @@ if (isset($_GET['add'])) {
             ];
         }
 
-        // Redireciona para limpar a URL e mostrar msg
         header('Location: ?page=CartController&msg=addsuccess');
         exit;
     } else {
