@@ -11,14 +11,10 @@ class Produto
 
     public function salvarProdutoEdit($nome, $preco, $variacoes, $estoque)
     {
+        // Inserir produto
         $stmt = $this->pdo->prepare("INSERT INTO produtos (nome, preco) VALUES (?, ?)");
         $stmt->execute([$nome, $preco]);
         $produtoId = $this->pdo->lastInsertId();
-
-        // Garante que $variacoes seja um array, mesmo que venha como string
-        if (!empty($variacoes) && is_string($variacoes)) {
-            $variacoes = array_map('trim', explode(',', $variacoes));
-        }
 
         if (!empty($variacoes) && is_array($variacoes)) {
             foreach ($variacoes as $i => $nomeVar) {
@@ -26,14 +22,14 @@ class Produto
                 $stmtVar->execute([$produtoId, $nomeVar]);
 
                 $variacaoId = $this->pdo->lastInsertId();
-                $qtd = is_array($estoque) ? intval($estoque[$i] ?? 0) : intval($estoque ?? 0);
+                $qtd = intval($estoque[$i] ?? 0);
 
                 $stmtEstoque = $this->pdo->prepare("INSERT INTO estoque (produto_id, variacao_id, quantidade) VALUES (?, ?, ?)");
                 $stmtEstoque->execute([$produtoId, $variacaoId, $qtd]);
             }
         } else {
             $stmtEstoque = $this->pdo->prepare("INSERT INTO estoque (produto_id, quantidade) VALUES (?, ?)");
-            $stmtEstoque->execute([$produtoId, intval($estoque ?? 0)]);
+            $stmtEstoque->execute([$produtoId, $estoque ?? 0]);
         }
     }
 
