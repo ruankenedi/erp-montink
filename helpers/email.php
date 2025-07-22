@@ -14,13 +14,13 @@ function enviarEmail($para, $pedidoId, $total)
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'ruankenedi01@gmail.com'; // Seu e-mail de teste
-        $mail->Password = 'alnjyneueilgqslh'; // Gere uma senha de app se usar 2FA
+        $mail->Username = 'seuemail@gmail.com'; // Seu e-mail de teste
+        $mail->Password = 'trocarsenha'; // Gere uma senha de app se usar 2FA
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
         // Remetente e destinatário
-        $mail->setFrom('ruankenedi01@gmail.com', 'ERP Montink');
+        $mail->setFrom('seuemail@gmail.com', 'ERP Montink');
         $mail->addAddress($para);
 
         // Conteúdo
