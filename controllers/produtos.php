@@ -26,9 +26,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'excluir' && $_SERVER['REQUEST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $produtoModel->salvar($_POST);
     // echo "<div class='alert alert-success'>Produto salvo com sucesso!</div>";
-     header('Location: ?page=produtos&sucesso=1');
+    header('Location: ?page=produtos&sucesso=1');
 }
 
 $produtos = $produtoModel->listar();
+
 require_once 'views/produtos/index.php';
 require_once 'views/footer.php';

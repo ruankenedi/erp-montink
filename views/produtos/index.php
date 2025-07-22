@@ -18,7 +18,6 @@
   </script>
 <?php endif; ?>
 
-
 <form method="POST" class="mb-4">
     <div class="mb-3">
         <label class="form-label">Nome</label>
@@ -38,23 +37,6 @@
     </div>
     <button class="btn btn-primary" type="submit">Salvar Produto</button>
 </form>
-
-<script>
-function addVariacao() {
-    const container = document.getElementById('variacoes');
-    const idx = container.children.length;
-    container.innerHTML += `
-        <div class="row mb-2">
-            <div class="col">
-                <input type="text" name="variacoes[]" class="form-control" placeholder="Nome da variação">
-            </div>
-            <div class="col">
-                <input type="number" name="estoque[]" class="form-control" placeholder="Qtd em estoque">
-            </div>
-        </div>
-    `;
-}
-</script>
 
 <hr>
 
@@ -108,4 +90,3 @@ function atualizarBotaoExcluir() {
   botao.disabled = checkboxes.length === 0;
 }
 </script>
-

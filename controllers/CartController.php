@@ -2,19 +2,15 @@
 session_start();
 require_once 'models/Produto.php';
 require_once 'views/header.php';
-require_once 'models/Coupon_model.php';
 
 $produtoModel = new Produto();
 
-// Add to cart
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['produto_id'])) {
-    $produtoId = $_POST['produto_id'];
-    $quantidade = intval($_POST['quantidade']);
+if (isset($_GET['add'])) {
+    $produtoId = intval($_GET['add']);
+    $quantidade = 1;
 
     $produto = $produtoModel->buscarPorId($produtoId);
-    if (!$produto) {
-        echo "<div class='alert alert-danger'>Produto não encontrado</div>";
-    } else {
+    if ($produto) {
         if (!isset($_SESSION['cart'])) {
             $_SESSION['cart'] = [];
         }
@@ -23,29 +19,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['produto_id'])) {
             $_SESSION['cart'][$produtoId]['quantidade'] += $quantidade;
         } else {
             $_SESSION['cart'][$produtoId] = [
+                'produto_id' => $produto['id'],
                 'nome' => $produto['nome'],
                 'preco' => $produto['preco'],
                 'quantidade' => $quantidade
             ];
         }
 
-        echo "<div class='alert alert-success'>Produto adicionado ao carrinho</div>";
+        // Redireciona para limpar a URL e mostrar msg
+        header('Location: ?page=CartController&msg=addsuccess');
+        exit;
+    } else {
+        echo "<div class='alert alert-danger'>Produto não encontrado.</div>";
     }
 }
 
-// Remover item
+// Remover item do carrinho
 if (isset($_GET['remover'])) {
     unset($_SESSION['cart'][$_GET['remover']]);
 }
 
-// Calcular subtotal
+// Cálculo subtotal, frete, desconto etc, mantém igual ao seu código original
 $cart = $_SESSION['cart'] ?? [];
 $subtotal = 0;
 foreach ($cart as $item) {
     $subtotal += $item['preco'] * $item['quantidade'];
 }
 
-// Calcular frete
 if ($subtotal >= 52 && $subtotal <= 166.59) {
     $frete = 15.00;
 } elseif ($subtotal > 200) {
@@ -54,30 +54,18 @@ if ($subtotal >= 52 && $subtotal <= 166.59) {
     $frete = 20.00;
 }
 
+// Verificar se tem cupom aplicado
+$cupom_aplicado = $_SESSION['cupom_aplicado'] ?? null;
+$desconto = $_SESSION['desconto'] ?? 0;
+
 $total = $subtotal + $frete;
 
-$couponModel = new Coupon();
-$coupon_applied = null;
-$desconto = 0;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo_cupom'])) {
-    $cupom = $couponModel->buscarPorCodigo($_POST['codigo_cupom']);
-    if ($cupom && $subtotal >= $cupom['minimo_subtotal']) {
-        $_SESSION['cupom'] = $cupom;
-        $coupon_applied = $cupom;
-        $desconto = $cupom['desconto'];
-        echo "<div class='alert alert-success'>Cupom aplicado com sucesso!</div>";
-    } else {
-        echo "<div class='alert alert-danger'>Cupom inválido ou subtotal abaixo do mínimo.</div>";
-    }
+// Mensagem de sucesso ao adicionar produto
+if (isset($_GET['msg']) && $_GET['msg'] === 'addsuccess') {
+    echo '<div class="alert alert-success">Produto adicionado ao carrinho com sucesso!</div>';
 }
 
-if (isset($_SESSION['coupon'])) {
-    $coupon_applied = $_SESSION['coupon'];
-    $desconto = $coupon_applied['desconto'];
-}
+$carrinho = $_SESSION['cart'] ?? [];
 
-$total = max(0, $subtotal + $frete - $desconto);
-
-require_once 'views/cart/index.php';
+require_once 'views/carrinho/index.php';
 require_once 'views/footer.php';

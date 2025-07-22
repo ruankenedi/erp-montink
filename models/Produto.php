@@ -47,6 +47,7 @@ class Produto
     {
         $stmt = $this->pdo->prepare("SELECT * FROM produtos WHERE id = ?");
         $stmt->execute([$id]);
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 

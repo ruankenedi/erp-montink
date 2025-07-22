@@ -1,8 +1,8 @@
 <?php
-require_once 'models/Cupom.php';
+require_once 'models/Coupon_model.php';
 require_once 'views/header.php';
 
-$model = new Coupon();
+$model = new Coupon_model();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $model->salvar($_POST);

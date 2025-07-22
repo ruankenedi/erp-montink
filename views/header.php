@@ -16,7 +16,7 @@
                 <li class="nav-item"><a class="nav-link" href="?page=produtos">Produtos</a></li>
                 <li class="nav-item"><a class="nav-link" href="?page=CartController">Carrinho</a></li>
                 <li class="nav-item"><a class="nav-link" href="?page=finalizar">Finalizar</a></li>
-                <li class="nav-item"><a class="nav-link" href="?page=cupons">Cupons</a></li>
+                <li class="nav-item"><a class="nav-link" href="?page=CouponController">Cupons</a></li>
             </ul>
         </div>
     </div>

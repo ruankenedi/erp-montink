@@ -14,14 +14,15 @@
     </tr>
   </thead>
   <tbody>
-  <?php foreach ($carrinho as $item): ?>
+  <?php foreach ($carrinho as $produtoId => $item): ?>
+    
     <tr>
       <td><?= htmlspecialchars($item['nome']) ?></td>
       <td><?= $item['quantidade'] ?></td>
       <td>R$ <?= number_format($item['preco'], 2, ',', '.') ?></td>
       <td>R$ <?= number_format($item['quantidade'] * $item['preco'], 2, ',', '.') ?></td>
       <td>
-        <a href="?page=CartController&remove=<?= $item['produto_id'] ?>" class="btn btn-danger btn-sm">Remover</a>
+        <a href="?page=CartController&remover=<?= $produtoId ?>" class="btn btn-danger btn-sm">Remover</a>
       </td>
     </tr>
   <?php endforeach; ?>
@@ -52,4 +53,3 @@
 <a href="?page=finalizar" class="btn btn-success">Finalizar Pedido</a>
 
 <?php endif; ?>
-

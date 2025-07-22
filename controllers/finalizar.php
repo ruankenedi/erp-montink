@@ -2,6 +2,7 @@
 session_start();
 require_once 'models/Produto.php';
 require_once 'views/header.php';
+require_once 'helpers/email.php';
 
 $produtoModel = new Produto();
 $cart = $_SESSION['cart'] ?? [];

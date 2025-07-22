@@ -1,6 +1,6 @@
 <?php
 
-class Cupom
+class Coupon_model
 {
     private $pdo;
 
