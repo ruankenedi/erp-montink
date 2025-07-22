@@ -85,44 +85,51 @@
 
 <form method="POST" action="?page=produtos&action=excluir">
   <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th><input type="checkbox" id="checkTodos"></th>
-        <th>Nome</th>
-        <th>Preço (R$)</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($produtos as $produto): ?>
-      <tr>
-        <td><input type="checkbox" class="checkbox-produto" name="produtos_excluir[]" value="<?= $produto['id'] ?>"></td>
-        <td><?= htmlspecialchars($produto['nome']) ?></td>
-        <td><?= number_format($produto['preco'], 2, ',', '.') ?></td>
-        <td>
-          <form method="POST" action="?page=CartController&add=<?= $produto['id'] ?>" style="display:inline-flex; align-items:center; gap:5px;">
+  <thead>
+    <tr>
+      <th><input type="checkbox" id="checkTodos"></th>
+      <th>Nome</th>
+      <th>Preço (R$)</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php foreach ($produtos as $produto): ?>
+    <tr>
+      <td>
+        <form method="POST" action="?page=produtos&action=excluir" class="form-exclusao">
+          <input type="checkbox" class="checkbox-produto" name="produtos_excluir[]" value="<?= $produto['id'] ?>">
+        </form>
+      </td>
+      <td><?= htmlspecialchars($produto['nome']) ?></td>
+      <td><?= number_format($produto['preco'], 2, ',', '.') ?></td>
+      <td>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <form method="POST" action="?page=CartController&add=<?= $produto['id'] ?>" class="d-flex align-items-center gap-2">
             <input
               type="number"
               name="quantidade"
               value="1"
               min="1"
               max="<?= isset($produto['estoque']) ? (int)$produto['estoque'] : 1000 ?>"
-              class="form-control form-control-sm"
-              style="width: 70px;"
+              class="form-control form-control-sm text-center"
+              style="width: 65px; border-radius: 20px;"
               required
             >
-            <button type="submit" class="btn btn-sm btn-success">Comprar</button>
+            <button type="submit" class="btn btn-sm btn-success rounded-pill px-3">Comprar</button>
           </form>
+
           <button 
-            class="btn btn-sm btn-warning" 
+            class="btn btn-sm btn-warning rounded-pill px-3" 
             onclick="abrirModalEdicao(<?= htmlspecialchars(json_encode($produto)) ?>)"
             type="button"
           >Editar</button>
-        </td>
-      </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
+        </div>
+      </td>
+    </tr>
+    <?php endforeach; ?>
+  </tbody>
+</table>
 
   <button type="submit" id="btnExcluir" class="btn btn-danger" disabled onclick="return confirm('Deseja mesmo excluir os produtos selecionados?')">
     Excluir Selecionados
@@ -141,6 +148,15 @@ document.getElementById('checkTodos').addEventListener('change', function () {
 document.querySelectorAll('.checkbox-produto').forEach(checkbox => {
   checkbox.addEventListener('change', atualizarBotaoExcluir);
 });
+
+function confirmarExclusao() {
+  const selecionados = document.querySelectorAll('.checkbox-produto:checked');
+  if (!selecionados.length) return false;
+
+  const ids = Array.from(selecionados).map(cb => cb.value);
+  document.getElementById('produtosSelecionados').value = ids;
+  return confirm('Deseja mesmo excluir os produtos selecionados?');
+}
 
 function atualizarBotaoExcluir() {
   const checkboxes = document.querySelectorAll('.checkbox-produto:checked');
